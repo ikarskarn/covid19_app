@@ -1,0 +1,218 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+main {
+    padding: 30px;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+header {
+    margin-bottom: 30px;
+}
+
+/*#region container*/
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.r0-readout {
+    width: 300px;
+    height: 300px;
+    border: 1px solid black;
+    align-self: center;
+    background-color: rgb(85, 9, 9);
+    color: white;
+    margin: 30px auto;
+    padding: 5px;
+    text-align: center;
+    border-radius: 20%;
+}
+
+/*#region state-block*/
+
+.state-block {
+    margin: 15px auto;
+}
+
+#js-form {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+}
+
+.search-term {
+    width: 100%;
+    height: 40px;
+    font-size: 32px;
+    text-align: center;
+    margin: 3px auto;
+}
+
+.search-state {
+    width: 100%;
+    height: 40px;
+    font-size: 18px;
+    margin: 3px auto;
+}
+
+#js-pick-state {
+    width: 50%;
+    height: 40px;
+    align-self: center;
+    border-radius: 10%;
+    margin: 3px auto;
+    background-color: blue;
+    color: white;
+}
+
+/*#endregion state-block*/
+
+/*#region data readout*/
+
+.data-readout {
+    display: flex;
+    flex-direction: column;
+}
+
+.state-name {
+    font-size: 28px;
+}
+
+/*#region data block*/
+
+.data-block {
+    display: flex;
+    flex-direction: column;
+    margin: 10px auto;
+}
+
+.data-last, .data-current, .future-block {
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    height: 250px;
+    border: 1px solid black;
+    border-radius: 10%;
+    justify-content: center;
+    font-size: 22px;
+    margin: 10px auto;
+}
+
+.data-last p, .data-current p, .future-block p {
+    text-align: center;
+}
+
+.future-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.data-seven-day, .data-fourteen-day {
+    margin: 0px auto;
+    width: 100%;
+}
+
+.data-seven-day {
+    border-bottom: 1px solid black;
+}
+
+.data-fourteen-day {
+    border-top: 1px solid black;
+}
+
+/*#endregion data block*/
+
+/*#endregion data block*/
+
+/*#endregion container*/
+
+
+
+/*
+
+
+
+
+#js-form {
+    margin: auto;
+    height: 100px;
+    width: 750px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.search-term, #js-search-term, #js-pick-state {
+    margin: auto 10px;
+}
+
+.search-term, #js-pick-state {
+    width: 200px;
+}
+
+.js-search-state {
+    height: 50px;
+    width: 50%;
+}
+
+.search-term {
+    font-size: 28px;
+}
+
+.js-search-state {
+    height: 28px;
+    margin: auto 20px;
+}
+
+#js-data-readout {
+    align-self: center;
+}
+
+#js-data-block {
+    display: flex;
+}
+
+.last-week, .current, .js-future-block {
+    width: 250px;
+    height: 250px;
+    border: 1px solid black;
+    text-align: center;
+}
+
+.js-future-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.seven-day, .fourteen-day {
+    height: 100%;
+    width: 100%;
+    border: 1px solid black;
+}
+
+.last-week p, .current p, .seven-day p, .fourteen-day p {
+    border-bottom: 2px solid black;
+}
+*/
+@media screen and (min-width: 480px) {
+    
+}
+
+@media screen and (min-width: 1024px) {
+    
+}

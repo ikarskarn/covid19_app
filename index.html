@@ -19,28 +19,36 @@
         
         <div class='container'>
             
-            <section id='js-r0-readout'>
+            <section class='r0-readout'>
                 <p>r0 Data Block</p>
             </section>
             
-            <section id='js-pick-state'>
+            <section class='state-block'>
                 <form id="js-form">
                     <label class="search-term" for="search-state">Search State</label>
-                    <select name="search-state" class="js-search-state" required>
+                    <select name="search-state" class="search-state" required>
                         <option value="" disabled selected>Choose a State</option>
                     </select>
                     <button type='button' id='js-pick-state'>Submit</button>
                 </form>
             </section> 
             
-            <section id="js-data-readout">
-                <h2 class='state'>United States</h2>
-                <section id='js-data-block'>
-                    <p>Last Week</p>
-                    <p>Current</p>
-                    <div class='js-future-block'>
-                        <p>7 Days</p>
-                        <p>14 Days</p>
+            <section class="data-readout">
+                <h2 class='state-name'>United States</h2>
+                <section class='data-block'>
+                    <div class="data-last">
+                        <p>Last Week</p>
+                    </div>
+                    <div class="data-current">
+                        <p>Current</p>
+                    </div>
+                    <div class='future-block'>
+                        <div class="data-seven-day">
+                            <p>7 Days</p>
+                        </div>
+                        <div class="data-fourteen-day">
+                            <p>14 Days</p>
+                        </div>
                     </div>
                 </section>
             </section>    
