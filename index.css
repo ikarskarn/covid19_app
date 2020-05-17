@@ -140,79 +140,20 @@ header {
 
 /*#endregion container*/
 
+@media screen and (min-width: 800px) {
+    .present-block {
+        display: flex;
+        flex-direction: row;
+    }    
 
-
-/*
-
-
-
-
-#js-form {
-    margin: auto;
-    height: 100px;
-    width: 750px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-}
-
-.search-term, #js-search-term, #js-pick-state {
-    margin: auto 10px;
-}
-
-.search-term, #js-pick-state {
-    width: 200px;
-}
-
-.js-search-state {
-    height: 50px;
-    width: 50%;
-}
-
-.search-term {
-    font-size: 28px;
-}
-
-.js-search-state {
-    height: 28px;
-    margin: auto 20px;
-}
-
-#js-data-readout {
-    align-self: center;
-}
-
-#js-data-block {
-    display: flex;
-}
-
-.last-week, .current, .js-future-block {
-    width: 250px;
-    height: 250px;
-    border: 1px solid black;
-    text-align: center;
-}
-
-.js-future-block {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-}
-
-.seven-day, .fourteen-day {
-    height: 100%;
-    width: 100%;
-    border: 1px solid black;
-}
-
-.last-week p, .current p, .seven-day p, .fourteen-day p {
-    border-bottom: 2px solid black;
-}
-*/
-@media screen and (min-width: 480px) {
-    
+    .data-last, .data-current, .future-block {
+        margin: 10px;
+    }
 }
 
 @media screen and (min-width: 1024px) {
-    
+    .data-block {
+        display: flex;
+        flex-direction: row;
+    }
 }
