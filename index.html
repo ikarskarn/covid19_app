@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Covid-19 Estimated Cases</title>
+    <link rel="shortcut icon" href="#">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <main>
+        
+        <header>
+            <h1>Covid-19 Data: Estimate the Risk</h1>
+            <p>Description of App: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </header>
+        
+        <div class='container'>
+            
+            <section id='js-r0-readout'>
+                <p>r0 Data Block</p>
+            </section>
+            
+            <section id='js-pick-state'>
+                <form id="js-form">
+                    <label class="search-term" for="search-state">Search State</label>
+                    <select name="search-state" class="js-search-state" required>
+                        <option value="" disabled selected>Choose a State</option>
+                    </select>
+                    <button type='button' id='js-pick-state'>Submit</button>
+                </form>
+            </section> 
+            
+            <section id="js-data-readout">
+                <h2 class='state'>United States</h2>
+                <section id='js-data-block'>
+                    <p>Last Week</p>
+                    <p>Current</p>
+                    <div class='js-future-block'>
+                        <p>7 Days</p>
+                        <p>14 Days</p>
+                    </div>
+                </section>
+            </section>    
+    
+        </div>
+    
+    </main>
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <script src="index.js"></script>
+</body>
+</html>
