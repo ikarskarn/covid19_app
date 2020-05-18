@@ -91,13 +91,16 @@ function displayResults(responseJson) {
 
 function rFormula(num) {
     //start 30 days prior to current date
-    //go back from there to find the most recent date with zero new cases
+    //go back from that date until the first day with 0 new cases
     //get daily values of new cases from that date until now and pass into an array
     //example [0, 2, 9, 22, 100, 80, 210, 500]
     //get r0 from this
     const arr = [0, 2, 9, 22, 100, 80, 210, 500];
+    //reproduction rate (r0) for each day in arr
     const ro_arr = [];
+    //starting
     for(let i = 1; i < arr.length - 1; i++) {
+        //get the 
         let newRO = arr[i+1]/arr[i];
         ro_arr.push(newRO);
         console.log(newRO);
@@ -108,29 +111,58 @@ function rFormula(num) {
     for(let r = 0; r < ro_arr.length; r++) {
           avgNum += ro_arr[r];
     }
-    finalR0 = avgNum / ro_arr.length;
+    //s = Fraction of Susceptible People: .95 (95%)
+    const s = .95;
+    console.log(`Fraction of Susceptible People: ${s}`);
+    //i = Fraction of Infectious Individuals: current infected / current population
+    /////currentInfected = 1479856
+    let currentInfected = 1247567;
+    let currentPopulation = 328000000;
+    const i = currentInfected / currentPopulation;
+    console.log(`Fraction of Infectious Individuals: ${i}`); 
+    //b = transmission rate (average of r0 values each day)
+    const b = 3;//avgNum / ro_arr.length;
+    console.log(`transimssion rate: ${b}`);
+    //y = recovery rate (avg. .98 (98%))
+    const y = .98;
+    console.log(`Recovery Rate: ${y}`);
+    //c = number of new cases per unit time (b * s * i);
+    finalR0 = b * i; 
+        
+    //final r0 is equal to:
+    //the sum of the days above divided by the number of days (average) (call this b)
+    //multiplied by the fraction of susceptible people: .95 (s);
+    //
     console.log('Final R0: ' + finalR0); 
     //start day after zero and get initial value
+    futureFormula(currentInfected, finalR0);
     
-    let init = arr[1];
-    //initial value: 2
-    
-    //get next day value: 9
-    //divide 9 by 2 to get r0 for that day. = 4.5
-    //get value of next day: 22
-    //divide 22 by 9 to get r0 for that day. = 2.4
-    //average r0 = 3.4. 
-    //r0 = 3.4
-    //continue through array to get final value
-    //all r0s = 4.5, 2.4, 4.5, 0.8, 2.6, 2.4 AVG: 2.9 (current r0)
+}
 
-    //with new r0 take current number of cases to predict 7 days and 14 days if number stays the same
+//with new r0 take current number of cases to predict 7 days and 14 days if number stays the same
+function futureFormula (currentInfected, finalR0) {
     //current number of cases = 500;
-    //multiply 500 * 2.9 to get next days potential = 1450
-    //for every 3 people potentially infected, drop 1 due to transmission rate.  1450 divided by 3 = 483 new cases
-    //add together 500 + 483 = 983 total new cases on day 2.
+    const current = currentInfected;
+    let newCurrent = current;
+    let sevenDay = current;
+    let fourteenDay = current;
+    
+    for(let i = 1; i < 15; i++) {
+        //multiply newCurrent cases * finalR0 to get next days potential
+        //for every 3 people potentially infected, drop 1 due to transmission rate.
+        //      
+        let newCases = (newCurrent*finalR0);
+        console.log('new cases: ' + newCases);
+        //add together new cases to new current to get next day's confirmed cases
+        newCurrent += newCases;
+        console.log(`Day ${i}`);
+        console.log(newCurrent); 
+    }
+    
+    
     //continue formula until 7 days have passed.  Continue formula until 14 days have passed.
     
+
 }
 
 function getCovidData(query) {
