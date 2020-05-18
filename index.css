@@ -62,7 +62,7 @@ header {
     margin: 3px auto;
 }
 
-.search-state {
+.js-search-state {
     width: 100%;
     height: 40px;
     font-size: 18px;
@@ -88,7 +88,7 @@ header {
     flex-direction: column;
 }
 
-.state-name {
+.js-state-name {
     font-size: 28px;
 }
 
