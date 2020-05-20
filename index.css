@@ -30,6 +30,8 @@ header {
 }
 
 .r0-readout {
+    display: flex;
+    flex-direction: column;
     width: 300px;
     height: 300px;
     border: 1px solid black;
@@ -42,6 +44,11 @@ header {
     border-radius: 20%;
 }
 
+#js-r0-number {
+    font-size: 100px;
+    height: 90%;
+    margin-top: 40px;
+}
 /*#region state-block*/
 
 .state-block {

@@ -14,13 +14,18 @@
         
         <header>
             <h1>Covid-19 Data: Estimate the Risk</h1>
-            <p>Description of App: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p>Many people are going beginning to go back to work and have been told that things will go back to normal soon.  Although this may be the case in some states, that may not be true in yours.  Below you will see the r0 number (pronounced r-nought).  The r0 represents the number of people that an infected person can infect each day. If the number is above one, it will continue to spread.  The higher the number, the faster the virus spreads.  If the number is below 1, it will eventually dwindle down until it is no longer a threat.</p> 
+                
+            <p>By default you should see the current numbers for the United States.  This is not a very accurate representation of the the potential spread because every state is different.  The COVID-19 Virus is spreading much faster in some state than it is in others.  Use the dropdown below to select whatever state you are interested in and you will see the r0 update as well as find out how many more (or less) people will be infected by next week and two weeks from now.  Keep in mind, that 14 days out is a long time.  Those numbers are less likely to be as accurate but they are still a good indication of how careful you should be before venturing out of you home.</p>  
+            
+            <p>I hope this is a helpful resources for you.  Be safe out there.</p>
         </header>
         
         <div class='container'>
             
             <section class='r0-readout'>
-                <p>r0 Data Block</p>
+                <p>Current R0</p>
+                <p id=js-r0-number>2.5</p>
             </section>
             
             <section class='state-block'>
@@ -39,17 +44,21 @@
                     <div class='present-block'>
                         <div class="data-last">
                             <p>Last Week</p>
+                            <p id=js-last-number>Last Week</p>
                         </div>
                         <div class="data-current">
                             <p>Current</p>
+                            <p id=js-current-number>Current</p>
                         </div> 
                     </div>
                     <div class='future-block'>
                         <div class="data-seven-day">
-                            <p>7 Days</p>
+                            <p>In 7 Days</p>
+                            <p id=js-seven-number>7 Days</p>
                         </div>
                         <div class="data-fourteen-day">
-                            <p>14 Days</p>
+                            <p>In 14 Days</p>
+                            <p id=js-fourteen-number>14 Days</p>
                         </div>
                     </div>
                 </section>

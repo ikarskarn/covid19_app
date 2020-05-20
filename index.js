@@ -1,7 +1,12 @@
 'use strict';
 
-const apiKey = 'q5CJDWvLbDbcPNJI1ZsLf3VtyFvkEMFuymeR9LTL'; 
-const searchURL = 'https://developer.nps.gov/api/v1/parks';
+//no api needed 
+const searchURL = 'https://covidtracking.com/api/v1/';
+const usDaily = 'us/daily.json';
+//FOR US DAILY: us/daily.json
+//FOR STATE DAILY: states/{state code}/daily.json
+
+//object for states
 const dropdownList = {
     AL: "Alabama",
     AK: "Alaska",
@@ -56,146 +61,141 @@ const dropdownList = {
     WY: "Wyoming",
 };
 
-//let currentState = '';
 let searchState = '';
 
-function formatQueryParams(params) {
-  const queryItems = Object.keys(params)
-    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
-  return queryItems.join('&');
+//future numbers
+let sevenDay = 0;
+let fourteenDay = 0;
+
+//pass values into the DOM
+function displayNumbers(r0, last, current, sevenDay, fourteenDay) {
+    $("#js-r0-number").text(`${r0.toFixed(2)}`);
+    $("#js-last-number").text(`${last}`);
+    $("#js-current-number").text(`${current}`);
+    $("#js-seven-number").text(`${sevenDay}`);
+    $("#js-fourteen-number").text(`${fourteenDay}`);
+
 }
 
-function displayResults(responseJson) {
-    //if there are previous results, remove them
-    $('#results-list').empty();
+//#region FORMULAS
+function r0Formula(responseJson) {
+    console.log(responseJson);
     
-    // iterate through the items array
-    //const chosenStateNames = currentState.join(', ');
-    //$('#js-state').text(`${responseJson.data[i].addresses.stateCode}`);
-    for (let i = 0; i < responseJson.data.length; i++) {
-        //for each data object in the items array, add a list item to the results list with the
-        //r0 data
-        //last week's numbers
-        //current numbers
-        
-        //$('#results-list').append(
-        //    `<li><h3>${responseJson.data[i].name}</h3>
-        //    <p>${responseJson.data[i].description}</p>
-        //    <a href='${responseJson.data[i].url}' target="_blank">${responseJson.data[i].name} Website</a>
-        //    </li>`
-        //)};
-    }
-    //display the results section
-    //$('#results').removeClass('hidden');
-};
-
-function rFormula(num) {
-    //start 30 days prior to current date
-    //go back from that date until the first day with 0 new cases
+    //start 15 days prior to current date
     //get daily values of new cases from that date until now and pass into an array
-    //example [0, 2, 9, 22, 100, 80, 210, 500]
-    //get r0 from this
-    const arr = [0, 2, 9, 22, 100, 80, 210, 500];
-    //reproduction rate (r0) for each day in arr
-    const ro_arr = [];
-    //starting
-    for(let i = 1; i < arr.length - 1; i++) {
-        //get the 
-        let newRO = arr[i+1]/arr[i];
-        ro_arr.push(newRO);
-        console.log(newRO);
+    const dailyArr = [];
+    for(let n = 15; n > 0; n--) {
+        dailyArr.push(responseJson[n].positive);
+        console.log(`${n} days ago there were ${responseJson[n].positive} total cases.`);
     }
-    
-    let finalR0 = 0;
-    let avgNum = 0;
-    for(let r = 0; r < ro_arr.length; r++) {
-          avgNum += ro_arr[r];
+
+    //get reproduction rate (r0) between each day in dailyArr
+    const r0_arr = [];
+    for(let i = 0; i < dailyArr.length -1; i++) {
+        let newR0 = dailyArr[i+1]/dailyArr[i];
+        r0_arr.push(newR0);
+        console.log(`New r0 for day ${i+1}: ${newR0}`);
     }
-    //s = Fraction of Susceptible People: .95 (95%)
-    const s = .95;
-    console.log(`Fraction of Susceptible People: ${s}`);
-    //i = Fraction of Infectious Individuals: current infected / current population
-    /////currentInfected = 1479856
-    let currentInfected = 1247567;
-    let currentPopulation = 328000000;
-    const i = currentInfected / currentPopulation;
-    console.log(`Fraction of Infectious Individuals: ${i}`); 
-    //b = transmission rate (average of r0 values each day)
-    const b = 3;//avgNum / ro_arr.length;
-    console.log(`transimssion rate: ${b}`);
-    //y = recovery rate (avg. .98 (98%))
-    const y = .98;
-    console.log(`Recovery Rate: ${y}`);
-    //c = number of new cases per unit time (b * s * i);
-    finalR0 = b * i; 
-        
-    //final r0 is equal to:
-    //the sum of the days above divided by the number of days (average) (call this b)
-    //multiplied by the fraction of susceptible people: .95 (s);
-    //
-    console.log('Final R0: ' + finalR0); 
-    //start day after zero and get initial value
-    futureFormula(currentInfected, finalR0);
+
+    ///////////////
+    ////FORMULA////
+    ///////////////
     
+    //inf = Fraction of Infectious Individuals: 
+    //(Currently Recovered - Currently Infected)/Currently Infected 
+    let currentInfected = responseJson[0].positive;
+    console.log(`Currently Infected: ${currentInfected}`);
+    let currentRecovered = responseJson[0].recovered;
+    console.log(`Currently Recovered: ${currentRecovered}`);
+    let inf = (currentInfected - currentRecovered)/currentInfected;
+    console.log(`Fraction of Infectious Individuals: ${inf}`);
+    
+    //r0 = transmission rate (average of r0 values each day)
+    let r0 = avgArr(r0_arr);
+    console.log(`Transimssion rate (r0): ${r0}`);
+    
+    //run function to predict future numbers
+    //need infectious percentage, currently infected, r0 as parameters
+    futureFormula(currentInfected, r0, inf);
+    //get last week's infected
+    let lastWeekInfected = responseJson[7].positive;
+    
+    //pass in all returned values to feed to the DOM
+    displayNumbers(r0, lastWeekInfected, currentInfected, sevenDay, fourteenDay);
 }
 
-//with new r0 take current number of cases to predict 7 days and 14 days if number stays the same
-function futureFormula (currentInfected, finalR0) {
-    //current number of cases = 500;
+//with new r0, take current number of cases to predict 7 days and 14 days if number stays the same
+function futureFormula (currentInfected, r0, inf) {
+        
     const current = currentInfected;
     let newCurrent = current;
-    let sevenDay = current;
-    let fourteenDay = current;
+    sevenDay = current;
+    fourteenDay = current;
     
-    for(let i = 1; i < 15; i++) {
-        //multiply newCurrent cases * finalR0 to get next days potential
-        //for every 3 people potentially infected, drop 1 due to transmission rate.
-        //      
-        let newCases = (newCurrent*finalR0);
-        console.log('new cases: ' + newCases);
+    for(let i = 0; i < 14; i++) {
+        //multiply newCurrent cases by the r0 and subtract the newCurrent cases to get next days potential new cases
+        //not all people are infectious, so for each 100 cases, 20% will be dropped
+        let newCases = ((newCurrent*r0)-newCurrent)*inf;
+        console.log(`Day ${i} new cases: ${newCases}`);
+        
         //add together new cases to new current to get next day's confirmed cases
-        newCurrent += newCases;
-        console.log(`Day ${i}`);
-        console.log(newCurrent); 
+        //1 in 3 people will not contract it the first time they encounter this person
+        //Therefore, multiply by .67
+        newCurrent += newCases*.67;
+        if(i === 6) {
+            //get value for seventh day prediction
+            sevenDay = Math.floor((newCurrent));
+            console.log(`Seven Days from Now: ${sevenDay}`);
+        }
+        else if(i === 13) {
+            //get value for 14th cay prediction
+            fourteenDay = Math.floor(newCurrent);
+            console.log(`Fourteen Days from Now: ${fourteenDay}`);
+        } 
     }
-    
-    
-    //continue formula until 7 days have passed.  Continue formula until 14 days have passed.
-    
+}
+//#endregion
 
+//#region GET DATA FROM API
+function getCovidDataUS() {
+       
+    const url = searchURL + usDaily;
+    console.log(url);
+
+    fetch(url)
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error(response.statusText);
+    })
+    .then(responseJson => r0Formula(responseJson))
+    .catch(err => {
+        $('#js-error-message').text(`Something went wrong: ${err.message}`);
+    });
 }
 
-function getCovidData(query) {
-    console.log(query);
+function getCovidDataState(query) {
     
+    const url = searchURL + `states/${query}/daily.json`;
+    console.log(url);
     
-    //const params = {
-    //    stateCode: list,
-    //};
-
-    //const queryString = formatQueryParams(params);
-    //const url = 'https://cors-anywhere.herokuapp.com/' + searchURL + '?' + queryString;
-
-    //console.log(url);
-
-    //const options = {
-    //    headers: new Headers({
-    //        "x-api-key": apiKey})
-    //};
-
-    //fetch(url, options)
-    //.then(response => {
-    //    if (response.ok) {
-    //        return response.json();
-    //    }
-    //    throw new Error(response.statusText);
-    //})
-    //.then(responseJson => displayResults(responseJson))
-    //.catch(err => {
-    //    $('#js-error-message').text(`Something went wrong: ${err.message}`);
-    //});
+    fetch(url)
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error(response.statusText);
+    })
+    .then(responseJson => r0Formula(responseJson))
+    //.then(responseJson => console.log(responseJson))
+    .catch(err => {
+        $('#js-error-message').text(`Something went wrong: ${err.message}`);
+    });
 }
+//#endregion
 
+//#region MAINTENANCE FUNCTIONS
 function createDropdown() {
     //use the dropdown object to create a dropdown in the DOM
     for (let [key, value] of Object.entries(dropdownList)) {
@@ -203,6 +203,17 @@ function createDropdown() {
             `<option class="${key}" value="${key}">${value}</option>`
     )};
 }
+
+//function for averaging my arrays
+function avgArr (arr) {
+    let num = 0;
+    for(let i = 0; i < arr.length; i++) {
+        num += arr[i];
+    }
+    console.log('check num ' + num);
+    return num / arr.length;
+}
+//#endregion
 
 function watchForm() {
 
@@ -217,7 +228,7 @@ function watchForm() {
         $(".js-search-state option:first").prop("selected", "selected");
         $(".js-state-name").text(dropdownList[searchState]);
         
-        getCovidData(searchState);
+        getCovidDataState(searchState);
         //console.log('hit add state button');
     });
 }
@@ -225,7 +236,8 @@ function watchForm() {
 function handleInit() {
     watchForm();
     createDropdown();
-    rFormula(10);
+    getCovidDataUS();
+    //rFormula();
 }
 
 $(handleInit);
