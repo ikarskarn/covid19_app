@@ -1,9 +1,43 @@
+ /* NOTES
+////////////////
+/////COLORS/////
+////////////////
+
+dullGreen: #61892F
+brightGreen: #86C232
+darkGrey: #222629
+lighterGrey: #474B4F
+lightestGrey: #6B6E70
+
+////////////////////
+/////COLORS END/////
+////////////////////
+
+///////////////
+/////FONTS/////
+///////////////
+HTML: 
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Montserrat:wght@500&display=swap" rel="stylesheet">
+
+CSS: 
+font-family: 'DM Serif Display', serif;
+font-family: 'Montserrat', sans-serif;
+
+///////////////////
+/////FONTS END/////
+///////////////////
+*/
+
 * {
     box-sizing: border-box;
 }
 
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1em;
+    line-height: 1.25em;
+    background-color: #222629;
+    color: rgb(202, 202, 202);
 }
 
 button:hover {
@@ -16,10 +50,33 @@ main {
 
 h1, h2 {
     text-align: center;
+    font-family: 'DM Serif Display', serif;
+    color: #86C232;
+
+}
+
+h1 {
+    font-size: 2em;
+    line-height: 1.25em;
+}
+
+h2 {
+    font-size: 1.65em;
+    line-height: 1.15em;
 }
 
 header {
-    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: column;
+    border: 1px solid #6B6E70;
+    padding: 20px;
+}
+
+.banner-image {
+    width: 256px;
+    height: 256px;
+    margin: auto;
 }
 
 /*#region container*/
@@ -29,19 +86,31 @@ header {
     justify-content: center;
 }
 
+.ro-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    justify-items: center;
+    border: solid 1px #6B6E70;
+    padding: 10px;
+}
+
 .r0-readout {
     display: flex;
     flex-direction: column;
-    width: 300px;
-    height: 300px;
-    border: 1px solid black;
-    align-self: center;
-    background-color: rgb(85, 9, 9);
-    color: white;
-    margin: 30px auto;
+    width: 256px;
+    height: 256px;
+    font-family: 'DM Serif Display', serif;
+    background-color: #A9A6A7;
+    color: #222629;
+    margin: auto;
     padding: 5px;
     text-align: center;
     border-radius: 20%;
+}
+
+.description {
+    width: 50%; 
 }
 
 #js-r0-number {
@@ -74,6 +143,7 @@ header {
     height: 40px;
     font-size: 18px;
     margin: 3px auto;
+    border-radius: 5px;
 }
 
 #js-pick-state {
@@ -82,8 +152,10 @@ header {
     align-self: center;
     border-radius: 10%;
     margin: 3px auto;
-    background-color: blue;
-    color: white;
+    background-color: #86C232;
+    color: #222629;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1em;
 }
 
 /*#endregion state-block*/
@@ -96,7 +168,8 @@ header {
 }
 
 .js-state-name {
-    font-size: 28px;
+    margin: 10px;
+    color: #86C232;
 }
 
 /*#region data block*/

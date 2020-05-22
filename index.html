@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Covid-19 Estimated Cases</title>
     <link rel="shortcut icon" href="#">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Montserrat:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="index.css">
 </head>
 
@@ -13,20 +14,29 @@
     <main>
         
         <header>
+            <img src="images/covidIcon.png" role="banner-img" alt="" class='banner-image'> <!--no alt text, should be ignored-->
             <h1>Covid-19 Data: Estimate the Risk</h1>
-            <p>Many people are going beginning to go back to work and have been told that things will go back to normal soon.  Although this may be the case in some states, that may not be true in yours.  Below you will see the r0 number (pronounced r-nought).  The r0 represents the number of people that an infected person can infect each day. If the number is above one, it will continue to spread.  The higher the number, the faster the virus spreads.  If the number is below 1, it will eventually dwindle down until it is no longer a threat.</p> 
-                
-            <p>By default you should see the current numbers for the United States.  This is not a very accurate representation of the the potential spread because every state is different.  The COVID-19 Virus is spreading much faster in some state than it is in others.  Use the dropdown below to select whatever state you are interested in and you will see the r0 update as well as find out how many more (or less) people will be infected by next week and two weeks from now.  Keep in mind, that 14 days out is a long time.  Those numbers are less likely to be as accurate but they are still a good indication of how careful you should be before venturing out of you home.</p>  
-            
-            <p>I hope this is a helpful resources for you.  Be safe out there.</p>
         </header>
         
-        <div class='container'>
+        <section class='description'>
+            <h3>Is it safe?</h3>
             
-            <section class='r0-readout'>
-                <p>Current R0</p>
-                <p id=js-r0-number>2.5</p>
-            </section>
+            <p>People are beginning to go back to work and have been told that things will go back to normal soon.  This may be the case in some states, that may not be true in yours. Using data retreived from the <span><a href=" https://covidtracking.com/" target="_blank">COVID-19 Tracking Project</a></span>, this page estimates what the risk of infection could be in the next couple of weeks by using the average R0 over the past 15 days.</p>
+            
+            <!--<p>By default you should see the current numbers for the United States.  This is not a very accurate representation of the the potential spread because every state is different.  The COVID-19 Virus is spreading much faster in some state than it is in others.  Use the dropdown below to select whatever state you are interested in and you will see the r0 update as well as find out how many more (or less) people will be infected by next week and two weeks from now.  Keep in mind, that 14 days out is a long time.  Those numbers are less likely to be as accurate but they are still a good indication of how careful you should be before venturing out of you home.</p>
+            
+            <p>I hope this is a helpful resources for you.  Be safe out there.</p>-->
+        </section>    
+                
+        <div class='container'>
+            <div class='ro-section'>
+                <h2 class='js-state-name'>United States</h2>
+                <section class='r0-readout'>
+                    <p>Current R0</p>
+                    <p id=js-r0-number>2.5</p>
+                    <img src="arrowUp.png" alt="R0 has gone up arrow">
+                </section>    
+            </div>
             
             <section class='state-block'>
                 <form id="js-form">
@@ -39,7 +49,7 @@
             </section> 
             
             <section class="data-readout">
-                <h2 class='js-state-name'>United States</h2>
+                <div id='js-state-dashboard'><a href="" target="_blank">State URL</a></div>
                 <section class='data-block'>
                     <div class='present-block'>
                         <div class="data-last">

@@ -77,6 +77,18 @@ function displayNumbers(r0, last, current, sevenDay, fourteenDay) {
 
 }
 
+function displayURL(responseJson, query) {
+    console.log(responseJson);
+    let stateUrl = " ";
+    for(let i = 0; i < responseJson.length; i++) {
+        if(responseJson[i].stateId === query) {
+            stateUrl = `${responseJson[i].url}`;
+            console.log(`We hit ${stateUrl}`);    
+        }
+    }
+    $('#js-state-dashboard').append(`<a href="${stateUrl}" target="_blank">State URL</a>`);
+}
+
 //#region FORMULAS
 function r0Formula(responseJson) {
     console.log(responseJson);
@@ -193,6 +205,24 @@ function getCovidDataState(query) {
         $('#js-error-message').text(`Something went wrong: ${err.message}`);
     });
 }
+
+function getStateURLs(query) {
+    const url = searchURL + `urls.json`;
+    console.log('state url: ' + url);
+    
+    fetch(url)
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error(response.statusText);
+    })
+    .then(responseJson => displayURL(responseJson, query))
+    //.then(responseJson => console.log(responseJson))
+    .catch(err => {
+        $('#js-error-message').text(`Something went wrong: ${err.message}`);
+    });
+}
 //#endregion
 
 //#region MAINTENANCE FUNCTIONS
@@ -229,6 +259,7 @@ function watchForm() {
         $(".js-state-name").text(dropdownList[searchState]);
         
         getCovidDataState(searchState);
+        getStateURLs(searchState);
         //console.log('hit add state button');
     });
 }
