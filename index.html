@@ -31,12 +31,17 @@
         <div class='container'>
             <div class='ro-section'>
                 <h2 class='js-state-name'>United States</h2>
-                <section class='r0-readout'>
-                    <p>Current R0</p>
-                    <p id=js-r0-number>2.5</p>
-                    <img src="arrowUp.png" alt="R0 has gone up arrow">
-                </section>    
+                <div class='r0-graph-block'>
+                    <section class='r0-readout'>
+                        <p>Current R0</p>
+                        <p id=js-r0-number>2.5</p>
+                        <img src="arrowUp.png" alt="R0 has gone up arrow">
+                    </section>
+                    <div id="my_dataviz"></div> 
+                </div>
             </div>
+
+
             
             <section class='state-block'>
                 <form id="js-form">
@@ -79,5 +84,7 @@
     </main>
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
     <script src="index.js"></script>
+    <!-- Load d3.js -->
+    <script src="https://d3js.org/d3.v4.js"></script>
 </body>
 </html>
