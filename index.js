@@ -67,17 +67,23 @@ let searchState = '';
 let sevenDay = 0;
 let fourteenDay = 0;
 
-//pass values into the DOM
+//needed globally for graph
+const graphNumbers = [];
+let graphHeight = 0;
+
+//#region DISPLAY TO DOM
 function displayNumbers(r0, last, current, sevenDay, fourteenDay) {
     $("#js-r0-number").text(`${r0.toFixed(2)}`);
-    $("#js-last-number").text(`${last}`);
-    $("#js-current-number").text(`${current}`);
-    $("#js-seven-number").text(`${sevenDay}`);
-    $("#js-fourteen-number").text(`${fourteenDay}`);
+    $("#js-last-number").text(parseNumbers(`${last}`));
+    $("#js-current-number").text(parseNumbers(`${current}`));
+    $("#js-seven-number").text(parseNumbers(`${sevenDay}`));
+    $("#js-fourteen-number").text(parseNumbers(`${fourteenDay}`));
 }
 
 function displayURL(responseJson, query) {
     console.log(responseJson);
+    $('#js-state-dashboard').empty();
+    $('#js-state-dashboard').removeClass('hidden');
     let stateUrl = " ";
     for(let i = 0; i < responseJson.length; i++) {
         if(responseJson[i].stateId === query) {
@@ -85,21 +91,29 @@ function displayURL(responseJson, query) {
             console.log(`We hit ${stateUrl}`);    
         }
     }
-    $('#js-state-dashboard').append(`<a href="${stateUrl}" target="_blank">State URL</a>`);
+    $('#js-state-dashboard').append(
+        `<p>For more information about your state's available resources follow the link below</p>
+        <a href="${stateUrl}" target="_blank">${dropdownList[query]} Covid Site</a>`);
 }
+//#endregion
 
 //#region FORMULAS
 function r0Formula(responseJson) {
     console.log(responseJson);
-    
+    //handleGraph(responseJson);
     //start 15 days prior to current date
     //get daily values of new cases from that date until now and pass into an array
     const dailyArr = [];
+    graphNumbers.splice(0);
+    //const graphArr = [];
     for(let n = 15; n > 0; n--) {
         dailyArr.push(responseJson[n].positive);
+        graphNumbers.push(responseJson[n].positiveIncrease);
         console.log(`${n} days ago there were ${responseJson[n].positive} total cases.`);
+        console.log(`${n} days ago there were ${responseJson[n].positiveIncrease} new cases.`);
     }
-
+    handleGraph(graphNumbers);
+    
     //get reproduction rate (r0) between each day in dailyArr
     const r0_arr = [];
     for(let i = 0; i < dailyArr.length -1; i++) {
@@ -107,7 +121,15 @@ function r0Formula(responseJson) {
         r0_arr.push(newR0);
         console.log(`New r0 for day ${i+1}: ${newR0}`);
     }
-
+    if(r0_arr[0] > r0_arr[1]) {
+        console.log('show up arrow');
+        $('#arrow').text('\u25B2')
+        .css({'color':'#BE3636'});
+    } else {
+        console.log('show down arrow');
+        $('#arrow').text(`\u25BC`)
+        .css({'color':'#86C231'});
+    }
     ///////////////
     ////FORMULA////
     ///////////////
@@ -181,7 +203,7 @@ function getCovidDataUS() {
         throw new Error(response.statusText);
     })
     .then(responseJson => r0Formula(responseJson))
-    .then(responseJson => handleGraph(responseJson))
+    //.then(responseJson => handleGraph(responseJson))
     .catch(err => {
         $('#js-error-message').text(`Something went wrong: ${err.message}`);
     });
@@ -243,6 +265,122 @@ function avgArr (arr) {
     console.log('check num ' + num);
     return num / arr.length;
 }
+
+let resizeTimer;
+//create the graph
+function handleGraph(arr) {
+    //console.log(responseJson);
+    //console.log(`data: ${data}`);
+    $('#previous-data').empty();
+    const dataset = [];
+    const maxVal = Math.max(...arr);
+    
+    for(let i = 0; i < arr.length; i++) {
+        let p = arr[i]/maxVal*100;
+        dataset.push(p.toFixed(3));
+    }
+    
+    let w = $('#previous-data').width();
+    let h = 256;
+    
+    let spacing = $('#previous-data').width()/15.5;
+    let yesterday = 0;
+    let today = 0;
+    let svg = d3.select('#previous-data')
+        .append('svg')
+        .attr('height', h)
+        .attr('width', w);
+
+    svg.selectAll('rect')
+        .data(dataset)
+        .enter()
+        .append('rect')
+        .attr('height', (d)=>`${d*2}px`)
+        .attr('width', $('#previous-data').width()/30)
+        .attr('x', (d, i)=>(i*spacing)+spacing/2)
+        .attr('y', (d, i)=>h-(2*d))
+        .attr('value', (d, i)=>i)
+        .attr('class', 'bar')
+        .style('fill', (d, i)=> {
+            console.log(typeof dataset[i]);
+            console.log(`data ${i} is ${dataset[i]}.`);
+            console.log(`data ${i+1} is ${dataset[i+1]}`);
+            if(i > 0) {
+                yesterday = parseFloat(dataset[i-1])
+            }
+            today = parseFloat(dataset[i]);
+            if(today > yesterday && i > 0) {
+                return '#BE3636';
+            } else {
+                return '#86C232';
+            }
+        });
+
+    svg.append('text')
+        .attr('x', w/2)
+        .attr('y', 30)
+        .text('Mouse Over Bar for Details')
+        .attr('class', 'svg-text hidden');
+
+    $(window).bind('resize', function(e) {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+            handleGraph(arr);
+        }, 250);
+    });
+}
+
+//function for graph hover
+function handleHover() { 
+    $('#previous-data').on('mouseover', '.bar', function(e) {
+        let v = this.getAttribute('value');
+        let f = reverseValues(v);
+        //console.log("Value: " + v);
+        $(".svg-text").text(`${parseNumbers(`${graphNumbers[v]}`)} new cases ${f} day(s) ago`);
+    });
+    
+    $('#previous-data').on('mouseleave', '.bar', function(e) {
+        $(".svg-text").text("Touch Bar for Details");
+    });
+    
+    //$("#previous-data").on('mouseover', function (e) {
+    //        console.log('hovered');
+    //        
+    //    }, function () {
+    //        
+    //});
+}
+
+function reverseValues(v) {
+    let n = '';
+    switch (v) {
+        case '0': n = '15'; break;
+        case '1': n = '14'; break;
+        case '2': n = '13'; break;
+        case '3': n = '12'; break;
+        case '4': n = '11'; break;
+        case '5': n = '10'; break;
+        case '6': n = '9'; break;
+        case '7': n = '8'; break;
+        case '8': n = '7'; break;
+        case '9': n = '6'; break;
+        case '10': n = '5'; break;
+        case '11': n = '4'; break;
+        case '12': n = '3'; break;
+        case '13': n = '2'; break;
+        case '14': n = '1'; break;
+        case '15': n = '0'; break;
+        default: n = 'Mouse Over Bar'; break
+    }
+    return n; 
+}
+
+//add commas for readability
+function parseNumbers (num) {
+    const numArr = num.toString().split(".");
+    numArr[0] = numArr[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return numArr.join(".");
+  }
 //#endregion
 
 function watchForm() {
@@ -268,62 +406,8 @@ function handleInit() {
     watchForm();
     createDropdown();
     getCovidDataUS();
+    handleHover();
     //rFormula();
-}
-
-function handleGraph(responseJson) {
-    // set the dimensions and margins of the graph
-    let margin = {top: 10, right: 30, bottom: 30, left: 40},
-    width = 256 - margin.left - margin.right,
-    height = 256 - margin.top - margin.bottom;
-
-    let svg = d3.select("#my_dataviz")
-    .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-        .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
-
-    // get the data
-    d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/1_OneNum.csv", function(data) {
-    
-    // X axis: scale and draw:
-    let x = d3.scaleLinear()
-        .domain([0, 10000000]) // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
-        .range([0, width]);
-    svg.append("g")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x));
-  
-    // set the parameters for the histogram
-    let histogram = d3.histogram()
-        .value(function(d) { return d.price; })   // I need to give the vector of value
-        .domain(x.domain())  // then the domain of the graphic
-        .thresholds(x.ticks(70)); // then the numbers of bins
-  
-    // And apply this function to data to get the bins
-    let bins = histogram(data);
-  
-    // Y axis: scale and draw:
-    let y = d3.scaleLinear()
-        .range([height, 0]);
-        y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
-    svg.append("g")
-        .call(d3.axisLeft(y));
-  
-    // append the bar rectangles to the svg element
-    svg.selectAll("rect")
-        .data(bins)
-        .enter()
-        .append("rect")
-          .attr("x", 1)
-          .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
-          .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
-          .attr("height", function(d) { return height - y(d.length); })
-          .style("fill", "#69b3a2")
-  
-  });
 }
 
 $(handleInit);

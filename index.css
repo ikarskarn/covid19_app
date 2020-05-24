@@ -52,6 +52,7 @@ h1, h2 {
     text-align: center;
     font-family: 'DM Serif Display', serif;
     color: #86C232;
+    letter-spacing: 1px;
 
 }
 
@@ -63,6 +64,26 @@ h1 {
 h2 {
     font-size: 1.65em;
     line-height: 1.15em;
+}
+
+a:link {
+    color: #86C232;
+}
+
+a:visited {
+    color:#61892F;
+}
+
+a:hover {
+    color: red;
+}
+
+a:active {
+    color: white;
+}
+
+.hidden {
+    display: none;
 }
 
 header {
@@ -88,52 +109,105 @@ header {
 
 .r0-graph-block {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+#previous-data {
+    width: 100%;
 }
 
 .ro-section {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-evenly;
     justify-items: center;
     border: solid 1px #6B6E70;
     padding: 10px;
+    height: 100%;
 }
 
 .r0-readout {
     display: flex;
     flex-direction: column;
-    width: 256px;
+    /*width: 500px;
+    height: 256px;*/
+    width: 100%;
     height: 256px;
     font-family: 'DM Serif Display', serif;
-    background-color: #A9A6A7;
-    color: #222629;
-    margin: auto;
-    padding: 5px;
+    color: #86C232;
     text-align: center;
-    border-radius: 20%;
+    border: 1px solid white;
+    border-radius: 10px;
+    justify-content: space-evenly;
+    padding: 10px;
+    margin-bottom: 15px; 
 }
 
-#my_dataviz {
-    width: 256px;
-    height: 256px;
+.r0-readout p {
+    font-size: 22px;
+    margin: auto;
+}
+
+#arrow {
+    font-size: 3em;
+}
+
+#previous-data {
+    display: flex;
+}
+
+svg {
     border: 1px solid white;
+    text-anchor: middle;
+    border-radius: 10px;
+    display: flex;
+    /*transform: translate(0, -240px) rotate(90deg);
+    transform-origin: 0 100%;
+    height: 100%;*/
+}
+
+.bar {
+    fill: #86C232;
+}
+
+#mobile-numbers {
+    text-align: center;
+}
+
+.svg-text {
+    fill: white;
+    font-size: 18px;
 }
 
 .description {
-    width: 50%; 
+    width: 100%; 
+}
+
+.description h3 {
+    color: #86C232;
+    font-family: 'DM Serif Display', serif;
+    letter-spacing: 1px;
+}
+
+.description p {
+    line-height: 24px;
 }
 
 #js-r0-number {
     font-size: 100px;
-    height: 90%;
-    margin-top: 40px;
+    margin: auto;
 }
+
+
 /*#region state-block*/
 
 .state-block {
-    margin: 15px auto;
+    margin: 20px auto;
+    margin-bottom: 5px;
+    border-top: 2px solid #86C232;
+    border-bottom: 2px solid #86C232;
+    padding-top: 15px;
 }
 
 #js-form {
@@ -163,7 +237,7 @@ header {
     height: 40px;
     align-self: center;
     border-radius: 10%;
-    margin: 3px auto;
+    margin: 20px auto;
     background-color: #86C232;
     color: #222629;
     font-family: 'DM Serif Display', serif;
@@ -184,6 +258,15 @@ header {
     color: #86C232;
 }
 
+#js-state-dashboard {
+    text-align: center;
+}
+
+#js-state-dashboard a {
+    font-size: 1.5em;
+    line-height: 22px;
+}
+
 /*#region data block*/
 
 .data-block {
@@ -197,11 +280,12 @@ header {
     flex-direction: column;
     width: 250px;
     height: 250px;
-    border: 1px solid black;
+    border: 1px solid white;
     border-radius: 10%;
     justify-content: center;
-    font-size: 22px;
+    font-size: 25px;
     margin: 10px auto;
+    color: #86C232;
 }
 
 .data-last p, .data-current p, .future-block p {
@@ -211,6 +295,7 @@ header {
 .future-block {
     display: flex;
     flex-direction: column;
+    margin: 0px auto;
 }
 
 .data-seven-day, .data-fourteen-day {
@@ -219,7 +304,7 @@ header {
 }
 
 .data-seven-day {
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid white;
 }
 
 .data-fourteen-day {
@@ -241,11 +326,25 @@ header {
     .data-last, .data-current, .future-block {
         margin: 10px;
     }
+
+    .future-block {
+        align-self: center;
+    }
 }
 
 @media screen and (min-width: 1024px) {
     .data-block {
         display: flex;
         flex-direction: row;
+    }
+
+    .r0-graph-block {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-;
+    }
+
+    .r0-readout, #previous-data {
+        width: 45%;
     }
 }

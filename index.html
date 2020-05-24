@@ -22,10 +22,6 @@
             <h3>Is it safe?</h3>
             
             <p>People are beginning to go back to work and have been told that things will go back to normal soon.  This may be the case in some states, that may not be true in yours. Using data retreived from the <span><a href=" https://covidtracking.com/" target="_blank">COVID-19 Tracking Project</a></span>, this page estimates what the risk of infection could be in the next couple of weeks by using the average R0 over the past 15 days.</p>
-            
-            <!--<p>By default you should see the current numbers for the United States.  This is not a very accurate representation of the the potential spread because every state is different.  The COVID-19 Virus is spreading much faster in some state than it is in others.  Use the dropdown below to select whatever state you are interested in and you will see the r0 update as well as find out how many more (or less) people will be infected by next week and two weeks from now.  Keep in mind, that 14 days out is a long time.  Those numbers are less likely to be as accurate but they are still a good indication of how careful you should be before venturing out of you home.</p>
-            
-            <p>I hope this is a helpful resources for you.  Be safe out there.</p>-->
         </section>    
                 
         <div class='container'>
@@ -35,12 +31,14 @@
                     <section class='r0-readout'>
                         <p>Current R0</p>
                         <p id=js-r0-number>2.5</p>
-                        <img src="arrowUp.png" alt="R0 has gone up arrow">
+                        <p id='arrow'>&uarr</p>
                     </section>
-                    <div id="my_dataviz"></div> 
+                    <div id='previous-data'>
+                        
+                    </div> 
                 </div>
             </div>
-
+            <p class='svg-text' id='mobile-numbers'>Touch Bar for Details</p>
 
             
             <section class='state-block'>
@@ -54,7 +52,9 @@
             </section> 
             
             <section class="data-readout">
-                <div id='js-state-dashboard'><a href="" target="_blank">State URL</a></div>
+                <div id='js-state-dashboard' class='hidden'>
+                    <a href="" target="_blank">State URL</a>
+                </div>
                 <section class='data-block'>
                     <div class='present-block'>
                         <div class="data-last">
