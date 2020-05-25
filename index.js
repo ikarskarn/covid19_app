@@ -1,6 +1,6 @@
 'use strict';
 
-//no api needed 
+//no api key needed 
 const searchURL = 'https://covidtracking.com/api/v1/';
 const usDaily = 'us/daily.json';
 //FOR US DAILY: us/daily.json
