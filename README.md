@@ -20,7 +20,7 @@ ___
 
 #### Mobile: Graphs for US and Georgia (separate captures)
 
-![Covid-19 App US Graph Example](/images/covid_graph.gif) /br ![Covid-19 App State Graph Example](/images/covid_graph_state.gif)
+![Covid-19 App US Graph Example](/images/covid_graph.gif) ![Covid-19 App State Graph Example](/images/covid_graph_state.gif)
 
 #### Responsive Layout and State Selection
 
