@@ -88,7 +88,6 @@ function displayURL(responseJson, query) {
     for(let i = 0; i < responseJson.length; i++) {
         if(responseJson[i].stateId === query) {
             stateUrl = `${responseJson[i].url}`;
-            console.log(`We hit ${stateUrl}`);    
         }
     }
     $('#js-state-dashboard').append(
@@ -100,17 +99,14 @@ function displayURL(responseJson, query) {
 //#region FORMULAS
 function r0Formula(responseJson) {
     console.log(responseJson);
-    //handleGraph(responseJson);
-    //start 15 days prior to current date
+    
+    //start 15 days prior to current date, clear graph array to redraw
     //get daily values of new cases from that date until now and pass into an array
     const dailyArr = [];
     graphNumbers.splice(0);
-    //const graphArr = [];
     for(let n = 15; n > 0; n--) {
         dailyArr.push(responseJson[n].positive);
         graphNumbers.push(responseJson[n].positiveIncrease);
-        console.log(`${n} days ago there were ${responseJson[n].positive} total cases.`);
-        console.log(`${n} days ago there were ${responseJson[n].positiveIncrease} new cases.`);
     }
     handleGraph(graphNumbers);
     
@@ -119,37 +115,36 @@ function r0Formula(responseJson) {
     for(let i = 0; i < dailyArr.length -1; i++) {
         let newR0 = dailyArr[i+1]/dailyArr[i];
         r0_arr.push(newR0);
-        console.log(`New r0 for day ${i+1}: ${newR0}`);
     }
+    
+    //show up/down arrow if r0 has gone up/down since previous day respectively
     if(r0_arr[0] > r0_arr[1]) {
-        console.log('show up arrow');
+        //up and red (bad)
         $('#arrow').text('\u25B2')
         .css({'color':'#BE3636'});
     } else {
-        console.log('show down arrow');
+        //down and green (good)
         $('#arrow').text(`\u25BC`)
         .css({'color':'#86C231'});
     }
-    ///////////////
-    ////FORMULA////
-    ///////////////
+    
+    ////////////////
+    ///R0 FORMULA///
+    ////////////////
     
     //inf = Fraction of Infectious Individuals: 
     //(Currently Recovered - Currently Infected)/Currently Infected 
     let currentInfected = responseJson[0].positive;
-    console.log(`Currently Infected: ${currentInfected}`);
     let currentRecovered = responseJson[0].recovered;
-    console.log(`Currently Recovered: ${currentRecovered}`);
     let inf = (currentInfected - currentRecovered)/currentInfected;
-    console.log(`Fraction of Infectious Individuals: ${inf}`);
     
     //r0 = transmission rate (average of r0 values each day)
     let r0 = avgArr(r0_arr);
-    console.log(`Transimssion rate (r0): ${r0}`);
     
     //run function to predict future numbers
     //need infectious percentage, currently infected, r0 as parameters
     futureFormula(currentInfected, r0, inf);
+    
     //get last week's infected
     let lastWeekInfected = responseJson[7].positive;
     
@@ -203,7 +198,6 @@ function getCovidDataUS() {
         throw new Error(response.statusText);
     })
     .then(responseJson => r0Formula(responseJson))
-    //.then(responseJson => handleGraph(responseJson))
     .catch(err => {
         $('#js-error-message').text(`Something went wrong: ${err.message}`);
     });
@@ -398,7 +392,6 @@ function watchForm() {
         
         getCovidDataState(searchState);
         getStateURLs(searchState);
-        //console.log('hit add state button');
     });
 }
 
@@ -407,7 +400,6 @@ function handleInit() {
     createDropdown();
     getCovidDataUS();
     handleHover();
-    //rFormula();
 }
 
 $(handleInit);
