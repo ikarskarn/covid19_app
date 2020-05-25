@@ -3,8 +3,6 @@
 //no api key needed 
 const searchURL = 'https://covidtracking.com/api/v1/';
 const usDaily = 'us/daily.json';
-//FOR US DAILY: us/daily.json
-//FOR STATE DAILY: states/{state code}/daily.json
 
 //object for states
 const dropdownList = {
@@ -70,6 +68,7 @@ let fourteenDay = 0;
 //needed globally for graph
 const graphNumbers = [];
 let graphHeight = 0;
+let resizeTimer;
 
 //#region DISPLAY TO DOM
 function displayNumbers(r0, last, current, sevenDay, fourteenDay) {
@@ -81,7 +80,6 @@ function displayNumbers(r0, last, current, sevenDay, fourteenDay) {
 }
 
 function displayURL(responseJson, query) {
-    console.log(responseJson);
     $('#js-state-dashboard').empty();
     $('#js-state-dashboard').removeClass('hidden');
     let stateUrl = " ";
@@ -98,8 +96,6 @@ function displayURL(responseJson, query) {
 
 //#region FORMULAS
 function r0Formula(responseJson) {
-    console.log(responseJson);
-    
     //start 15 days prior to current date, clear graph array to redraw
     //get daily values of new cases from that date until now and pass into an array
     const dailyArr = [];
@@ -164,7 +160,6 @@ function futureFormula (currentInfected, r0, inf) {
         //multiply newCurrent cases by the r0 and subtract the newCurrent cases to get next days potential new cases
         //not all people are infectious, so for each 100 cases, 20% will be dropped
         let newCases = ((newCurrent*r0)-newCurrent)*inf;
-        console.log(`Day ${i} new cases: ${newCases}`);
         
         //add together new cases to new current to get next day's confirmed cases
         //1 in 3 people will not contract it the first time they encounter this person
@@ -173,12 +168,10 @@ function futureFormula (currentInfected, r0, inf) {
         if(i === 6) {
             //get value for seventh day prediction
             sevenDay = Math.floor((newCurrent));
-            console.log(`Seven Days from Now: ${sevenDay}`);
         }
         else if(i === 13) {
             //get value for 14th cay prediction
             fourteenDay = Math.floor(newCurrent);
-            console.log(`Fourteen Days from Now: ${fourteenDay}`);
         } 
     }
 }
@@ -188,7 +181,6 @@ function futureFormula (currentInfected, r0, inf) {
 function getCovidDataUS() {
        
     const url = searchURL + usDaily;
-    console.log(url);
 
     fetch(url)
     .then(response => {
@@ -206,7 +198,6 @@ function getCovidDataUS() {
 function getCovidDataState(query) {
     
     const url = searchURL + `states/${query}/daily.json`;
-    console.log(url);
     
     fetch(url)
     .then(response => {
@@ -216,7 +207,6 @@ function getCovidDataState(query) {
         throw new Error(response.statusText);
     })
     .then(responseJson => r0Formula(responseJson))
-    //.then(responseJson => console.log(responseJson))
     .catch(err => {
         $('#js-error-message').text(`Something went wrong: ${err.message}`);
     });
@@ -224,7 +214,6 @@ function getCovidDataState(query) {
 
 function getStateURLs(query) {
     const url = searchURL + `urls.json`;
-    console.log('state url: ' + url);
     
     fetch(url)
     .then(response => {
@@ -234,7 +223,6 @@ function getStateURLs(query) {
         throw new Error(response.statusText);
     })
     .then(responseJson => displayURL(responseJson, query))
-    //.then(responseJson => console.log(responseJson))
     .catch(err => {
         $('#js-error-message').text(`Something went wrong: ${err.message}`);
     });
@@ -256,15 +244,12 @@ function avgArr (arr) {
     for(let i = 0; i < arr.length; i++) {
         num += arr[i];
     }
-    console.log('check num ' + num);
     return num / arr.length;
 }
 
-let resizeTimer;
+//#region GRAPH FUNCTIONS
 //create the graph
 function handleGraph(arr) {
-    //console.log(responseJson);
-    //console.log(`data: ${data}`);
     $('#previous-data').empty();
     const dataset = [];
     const maxVal = Math.max(...arr);
@@ -296,9 +281,6 @@ function handleGraph(arr) {
         .attr('value', (d, i)=>i)
         .attr('class', 'bar')
         .style('fill', (d, i)=> {
-            console.log(typeof dataset[i]);
-            console.log(`data ${i} is ${dataset[i]}.`);
-            console.log(`data ${i+1} is ${dataset[i+1]}`);
             if(i > 0) {
                 yesterday = parseFloat(dataset[i-1])
             }
@@ -329,20 +311,12 @@ function handleHover() {
     $('#previous-data').on('mouseover', '.bar', function(e) {
         let v = this.getAttribute('value');
         let f = reverseValues(v);
-        //console.log("Value: " + v);
         $(".svg-text").text(`${parseNumbers(`${graphNumbers[v]}`)} new cases ${f} day(s) ago`);
     });
     
     $('#previous-data').on('mouseleave', '.bar', function(e) {
         $(".svg-text").text("Touch Bar for Details");
     });
-    
-    //$("#previous-data").on('mouseover', function (e) {
-    //        console.log('hovered');
-    //        
-    //    }, function () {
-    //        
-    //});
 }
 
 function reverseValues(v) {
@@ -368,6 +342,7 @@ function reverseValues(v) {
     }
     return n; 
 }
+//#endregion
 
 //add commas for readability
 function parseNumbers (num) {
@@ -378,7 +353,6 @@ function parseNumbers (num) {
 //#endregion
 
 function watchForm() {
-
     $('#js-pick-state').on('click', event => {
         event.preventDefault();
         searchState = $('.js-search-state').val();
