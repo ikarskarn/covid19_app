@@ -24,11 +24,11 @@ ___
 
 #### Responsive Layout and State Selection
 
-![Covid-19 App Example of Responsive Layout](/images/CovidApp_PageResponsive.png)
+![Covid-19 App Example of Responsive Layout](/images/CovidApp_PageResponsive.PNG)
 
 #### Desktop: Predictions and Hyperlinks to State Covid Response Webpage
 
-![Covid-19 App Example of Predictive Data Section](/images/CovidApp_Data.png)
+![Covid-19 App Example of Predictive Data Section](/images/CovidApp_Data.PNG)
 
 ___
 
