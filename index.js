@@ -57,6 +57,7 @@ const dropdownList = {
     WV: "West Virginia",
     WI: "Wisconsin",
     WY: "Wyoming",
+    ALL: "United States",
 };
 
 let searchState = '';
@@ -179,7 +180,8 @@ function futureFormula (currentInfected, r0, inf) {
 
 //#region GET DATA FROM API
 function getCovidDataUS() {
-       
+    
+    $('#js-state-dashboard').addClass('hidden');
     const url = searchURL + usDaily;
 
     fetch(url)
@@ -364,8 +366,14 @@ function watchForm() {
         $(".js-search-state option:first").prop("selected", "selected");
         $(".js-state-name").text(dropdownList[searchState]);
         
+        if(searchState === 'ALL') {
+            getCovidDataUS();
+            return;
+        }
+
         getCovidDataState(searchState);
         getStateURLs(searchState);
+        
     });
 }
 
