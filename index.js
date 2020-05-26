@@ -1,75 +1,68 @@
 'use strict';
 
-//no api key needed 
-const searchURL = 'https://covidtracking.com/api/v1/';
-const usDaily = 'us/daily.json';
-
-//object for states
-const dropdownList = {
-    AL: "Alabama",
-    AK: "Alaska",
-    AZ: "Arizona",
-    AR: "Arkansas",
-    CA: "California",
-    CO: "Colorado",
-    CT: "Connecticut",
-    DE: "Delaware",
-    DC: "District Of Columbia",
-    FL: "Florida",
-    GA: "Georgia",
-    HI: "Hawaii",
-    ID: "Idaho",
-    IL: "Illinois",
-    IN: "Indiana",
-    IA: "Iowa",
-    KS: "Kansas",
-    KY: "Kentucky",
-    LA: "Louisiana",
-    ME: "Maine",
-    MD: "Maryland",
-    MA: "Massachusetts",
-    MI: "Michigan",
-    MN: "Minnesota",
-    MS: "Mississippi",
-    MO: "Missouri",
-    MT: "Montana",
-    NE: "Nebraska",
-    NV: "Nevada",
-    NH: "New Hampshire",
-    NJ: "New Jersey",
-    NM: "New Mexico",
-    NY: "New York",
-    NC: "North Carolina",
-    ND: "North Dakota",
-    OH: "Ohio",
-    OK: "Oklahoma",
-    OR: "Oregon",
-    PA: "Pennsylvania",
-    RI: "Rhode Island",
-    SC: "South Carolina",
-    SD: "South Dakota",
-    TN: "Tennessee",
-    TX: "Texas",
-    UT: "Utah",
-    VT: "Vermont",
-    VA: "Virginia",
-    WA: "Washington",
-    WV: "West Virginia",
-    WI: "Wisconsin",
-    WY: "Wyoming",
-    ALL: "United States",
-};
-
-let searchState = '';
-
-//future numbers
-let sevenDay = 0;
-let fourteenDay = 0;
-
-//needed globally for graph
-const graphNumbers = [];
-let graphHeight = 0;
-let resizeTimer;
+const STORE = {
+    searchURL: 'https://covidtracking.com/api/v1/',
+    usDaily: 'us/daily.json',
+    searchState: '',
+    sevenDay: 0,
+    fourteenDay: 0,
+    graphNumbers: [],
+    resizeTimer: 0,
+    dropdownList: {
+        AL: "Alabama",
+        AK: "Alaska",
+        AZ: "Arizona",
+        AR: "Arkansas",
+        CA: "California",
+        CO: "Colorado",
+        CT: "Connecticut",
+        DE: "Delaware",
+        DC: "District Of Columbia",
+        FL: "Florida",
+        GA: "Georgia",
+        HI: "Hawaii",
+        ID: "Idaho",
+        IL: "Illinois",
+        IN: "Indiana",
+        IA: "Iowa",
+        KS: "Kansas",
+        KY: "Kentucky",
+        LA: "Louisiana",
+        ME: "Maine",
+        MD: "Maryland",
+        MA: "Massachusetts",
+        MI: "Michigan",
+        MN: "Minnesota",
+        MS: "Mississippi",
+        MO: "Missouri",
+        MT: "Montana",
+        NE: "Nebraska",
+        NV: "Nevada",
+        NH: "New Hampshire",
+        NJ: "New Jersey",
+        NM: "New Mexico",
+        NY: "New York",
+        NC: "North Carolina",
+        ND: "North Dakota",
+        OH: "Ohio",
+        OK: "Oklahoma",
+        OR: "Oregon",
+        PA: "Pennsylvania",
+        RI: "Rhode Island",
+        SC: "South Carolina",
+        SD: "South Dakota",
+        TN: "Tennessee",
+        TX: "Texas",
+        UT: "Utah",
+        VT: "Vermont",
+        VA: "Virginia",
+        WA: "Washington",
+        WV: "West Virginia",
+        WI: "Wisconsin",
+        WY: "Wyoming",
+        ALL: "United States",
+    },    
+}
 
 //#region DISPLAY TO DOM
 function displayNumbers(r0, last, current, sevenDay, fourteenDay) {
@@ -91,7 +84,7 @@ function displayURL(responseJson, query) {
     }
     $('#js-state-dashboard').append(
         `<p>For more information about your state's available resources follow the link below</p>
-        <a href="${stateUrl}" target="_blank">${dropdownList[query]} Covid Site</a>`);
+        <a href="${stateUrl}" target="_blank">${STORE.dropdownList[query]} Covid Site</a>`);
 }
 //#endregion
 
@@ -100,17 +93,17 @@ function r0Formula(responseJson) {
     //start 15 days prior to current date, clear graph array to redraw
     //get daily values of new cases from that date until now and pass into an array
     const dailyArr = [];
-    graphNumbers.splice(0);
+    STORE.graphNumbers.splice(0);
     for(let n = 15; n > 0; n--) {
         dailyArr.push(responseJson[n].positive);
-        graphNumbers.push(responseJson[n].positiveIncrease);
+        STORE.graphNumbers.push(responseJson[n].positiveIncrease);
     }
-    handleGraph(graphNumbers);
+    handleGraph(STORE.graphNumbers);
     
     //get reproduction rate (r0) between each day in dailyArr
     const r0_arr = [];
     for(let i = 0; i < dailyArr.length -1; i++) {
-        let newR0 = dailyArr[i+1]/dailyArr[i];
+        const newR0 = dailyArr[i+1]/dailyArr[i];
         r0_arr.push(newR0);
     }
     
@@ -131,22 +124,22 @@ function r0Formula(responseJson) {
     
     //inf = Fraction of Infectious Individuals: 
     //(Currently Recovered - Currently Infected)/Currently Infected 
-    let currentInfected = responseJson[0].positive;
-    let currentRecovered = responseJson[0].recovered;
-    let inf = (currentInfected - currentRecovered)/currentInfected;
+    const currentInfected = responseJson[0].positive;
+    const currentRecovered = responseJson[0].recovered;
+    const inf = (currentInfected - currentRecovered)/currentInfected;
     
     //r0 = transmission rate (average of r0 values each day)
-    let r0 = avgArr(r0_arr);
+    const r0 = avgArr(r0_arr);
     
     //run function to predict future numbers
     //need infectious percentage, currently infected, r0 as parameters
     futureFormula(currentInfected, r0, inf);
     
     //get last week's infected
-    let lastWeekInfected = responseJson[7].positive;
+    const lastWeekInfected = responseJson[7].positive;
     
     //pass in all returned values to feed to the DOM
-    displayNumbers(r0, lastWeekInfected, currentInfected, sevenDay, fourteenDay);
+    displayNumbers(r0, lastWeekInfected, currentInfected, STORE.sevenDay, STORE.fourteenDay);
 }
 
 //with new r0, take current number of cases to predict 7 days and 14 days if number stays the same
@@ -154,13 +147,13 @@ function futureFormula (currentInfected, r0, inf) {
         
     const current = currentInfected;
     let newCurrent = current;
-    sevenDay = current;
-    fourteenDay = current;
+    STORE.sevenDay = current;
+    STORE.fourteenDay = current;
     
     for(let i = 0; i < 14; i++) {
         //multiply newCurrent cases by the r0 and subtract the newCurrent cases to get next days potential new cases
         //not all people are infectious, so for each 100 cases, 20% will be dropped
-        let newCases = ((newCurrent*r0)-newCurrent)*inf;
+        const newCases = ((newCurrent*r0)-newCurrent)*inf;
         
         //add together new cases to new current to get next day's confirmed cases
         //1 in 3 people will not contract it the first time they encounter this person
@@ -168,11 +161,11 @@ function futureFormula (currentInfected, r0, inf) {
         newCurrent += newCases*.67;
         if(i === 6) {
             //get value for seventh day prediction
-            sevenDay = Math.floor((newCurrent));
+            STORE.sevenDay = Math.floor((newCurrent));
         }
         else if(i === 13) {
             //get value for 14th cay prediction
-            fourteenDay = Math.floor(newCurrent);
+            STORE.fourteenDay = Math.floor(newCurrent);
         } 
     }
 }
@@ -182,7 +175,7 @@ function futureFormula (currentInfected, r0, inf) {
 function getCovidDataUS() {
     
     $('#js-state-dashboard').addClass('hidden');
-    const url = searchURL + usDaily;
+    const url = STORE.searchURL + STORE.usDaily;
 
     fetch(url)
     .then(response => {
@@ -199,7 +192,7 @@ function getCovidDataUS() {
 
 function getCovidDataState(query) {
     
-    const url = searchURL + `states/${query}/daily.json`;
+    const url = STORE.searchURL + `states/${query}/daily.json`;
     
     fetch(url)
     .then(response => {
@@ -215,7 +208,7 @@ function getCovidDataState(query) {
 }
 
 function getStateURLs(query) {
-    const url = searchURL + `urls.json`;
+    const url = STORE.searchURL + `urls.json`;
     
     fetch(url)
     .then(response => {
@@ -234,7 +227,7 @@ function getStateURLs(query) {
 //#region MAINTENANCE FUNCTIONS
 function createDropdown() {
     //use the dropdown object to create a dropdown in the DOM
-    for (let [key, value] of Object.entries(dropdownList)) {
+    for (let [key, value] of Object.entries(STORE.dropdownList)) {
         $('.js-search-state').append(
             `<option class="${key}" value="${key}">${value}</option>`
     )};
@@ -257,17 +250,17 @@ function handleGraph(arr) {
     const maxVal = Math.max(...arr);
     
     for(let i = 0; i < arr.length; i++) {
-        let p = arr[i]/maxVal*100;
+        const p = arr[i]/maxVal*100;
         dataset.push(p.toFixed(3));
     }
     
-    let w = $('#previous-data').width();
-    let h = 256;
+    const w = $('#previous-data').width();
+    const h = 256;
     
-    let spacing = $('#previous-data').width()/15.5;
+    const spacing = $('#previous-data').width()/15.5;
     let yesterday = 0;
     let today = 0;
-    let svg = d3.select('#previous-data')
+    const svg = d3.select('#previous-data')
         .append('svg')
         .attr('height', h)
         .attr('width', w);
@@ -301,8 +294,8 @@ function handleGraph(arr) {
         .attr('class', 'svg-text hidden');
 
     $(window).bind('resize', function(e) {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function() {
+        clearTimeout(STORE.resizeTimer);
+        STORE.resizeTimer = setTimeout(function() {
             handleGraph(arr);
         }, 250);
     });
@@ -311,9 +304,9 @@ function handleGraph(arr) {
 //function for graph hover
 function handleHover() { 
     $('#previous-data').on('mouseover', '.bar', function(e) {
-        let v = this.getAttribute('value');
-        let f = reverseValues(v);
-        $(".svg-text").text(`${parseNumbers(`${graphNumbers[v]}`)} new cases ${f} day(s) ago`);
+        const v = this.getAttribute('value');
+        const f = reverseValues(v);
+        $(".svg-text").text(`${parseNumbers(`${STORE.graphNumbers[v]}`)} new cases ${f} day(s) ago`);
     });
     
     $('#previous-data').on('mouseleave', '.bar', function(e) {
@@ -357,22 +350,22 @@ function parseNumbers (num) {
 function watchForm() {
     $('#js-pick-state').on('click', event => {
         event.preventDefault();
-        searchState = $('.js-search-state').val();
-        if(searchState === null) {
+        STORE.searchState = $('.js-search-state').val();
+        if(STORE.searchState === null) {
             alert('Please Choose a State');
             return;    
         }
         
         $(".js-search-state option:first").prop("selected", "selected");
-        $(".js-state-name").text(dropdownList[searchState]);
+        $(".js-state-name").text(STORE.dropdownList[STORE.searchState]);
         
-        if(searchState === 'ALL') {
+        if(STORE.searchState === 'ALL') {
             getCovidDataUS();
             return;
         }
 
-        getCovidDataState(searchState);
-        getStateURLs(searchState);
+        getCovidDataState(STORE.searchState);
+        getStateURLs(STORE.searchState);
         
     });
 }
