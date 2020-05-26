@@ -281,7 +281,7 @@ function handleGraph(arr) {
         .attr('y', (d, i)=>h-(2*d))
         .attr('value', (d, i)=>i+1)
         .attr('class', 'bar')
-        .attr('tabindex', (d, i)=>i+1)
+        .attr('tabindex', (d, i)=>i+2)
         .style('fill', (d, i)=> {
             if(i > 0) {
                 yesterday = parseFloat(dataset[i-1])
