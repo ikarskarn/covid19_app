@@ -96,7 +96,12 @@ function r0Formula(responseJson) {
     STORE.graphNumbers.splice(0);
     for(let n = 15; n > 0; n--) {
         dailyArr.push(responseJson[n].positive);
-        STORE.graphNumbers.push(responseJson[n].positiveIncrease);
+        if(responseJson[n].positiveIncrease <= 0) {
+            STORE.graphNumbers.push(0);
+        } else {
+            STORE.graphNumbers.push(responseJson[n].positiveIncrease);
+        }
+
     }
     handleGraph(STORE.graphNumbers);
     
@@ -187,6 +192,7 @@ function getCovidDataUS() {
     .then(responseJson => r0Formula(responseJson))
     .catch(err => {
         $('#js-error-message').text(`Something went wrong: ${err.message}`);
+        $('.svg-text').text('Something went wrong.  Server may be acting up.  Please try again later.');
     });
 }
 
@@ -275,6 +281,7 @@ function handleGraph(arr) {
         .attr('y', (d, i)=>h-(2*d))
         .attr('value', (d, i)=>i)
         .attr('class', 'bar')
+        .attr('tabindex', (d, i)=>i+1)
         .style('fill', (d, i)=> {
             if(i > 0) {
                 yesterday = parseFloat(dataset[i-1])
@@ -304,6 +311,12 @@ function handleGraph(arr) {
 //function for graph hover
 function handleHover() { 
     $('#previous-data').on('mouseover', '.bar', function(e) {
+        const v = this.getAttribute('value');
+        const f = reverseValues(v);
+        $(".svg-text").text(`${parseNumbers(`${STORE.graphNumbers[v]}`)} new cases ${f} day(s) ago`);
+    });
+
+    $('#previous-data').on('focus', '.bar', function(e) {
         const v = this.getAttribute('value');
         const f = reverseValues(v);
         $(".svg-text").text(`${parseNumbers(`${STORE.graphNumbers[v]}`)} new cases ${f} day(s) ago`);
