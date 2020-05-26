@@ -60,7 +60,7 @@ header {
     flex-direction: column;
     justify-content: column;
     border: 1px solid #6B6E70;
-    padding: 20px;
+    padding: auto;
 }
 
 .banner-image {
@@ -167,6 +167,7 @@ svg {
 /*#region state-block*/
 
 .state-block {
+    width: 100%;
     margin: 20px auto;
     margin-bottom: 5px;
     border-top: 2px solid #86C232;
@@ -177,7 +178,7 @@ svg {
 #js-form {
     display: flex;
     flex-direction: column;
-    width: 300px;
+    width: 100%;
 }
 
 .search-term {
@@ -280,6 +281,27 @@ svg {
 /*#endregion data block*/
 
 /*#endregion container*/
+
+@media screen and (min-width: 400px) {
+    .state-block {
+        width: 100%;
+        margin: 20px auto;
+        margin-bottom: 5px;
+        border-top: 2px solid #86C232;
+        border-bottom: 2px solid #86C232;
+        padding-top: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    #js-form {
+        display: flex;
+        flex-direction: column;
+        width: 300px;
+        align-self: center;
+    }    
+}
 
 @media screen and (min-width: 800px) {
     .present-block {
