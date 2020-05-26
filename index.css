@@ -135,10 +135,6 @@ svg {
     fill: #86C232;
 }
 
-.bar:focus {
-    fill: yellow;
-}
-
 #mobile-numbers {
     text-align: center;
 }

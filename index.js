@@ -279,7 +279,7 @@ function handleGraph(arr) {
         .attr('width', $('#previous-data').width()/30)
         .attr('x', (d, i)=>(i*spacing)+spacing/2)
         .attr('y', (d, i)=>h-(2*d))
-        .attr('value', (d, i)=>i)
+        .attr('value', (d, i)=>i+1)
         .attr('class', 'bar')
         .attr('tabindex', (d, i)=>i+1)
         .style('fill', (d, i)=> {
