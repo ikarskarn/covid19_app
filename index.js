@@ -94,7 +94,7 @@ function r0Formula(responseJson) {
     //get daily values of new cases from that date until now and pass into an array
     const dailyArr = [];
     STORE.graphNumbers.splice(0);
-    for(let n = 15; n > 0; n--) {
+    for(let n = 16; n > 0; n--) {
         dailyArr.push(responseJson[n].positive);
         if(responseJson[n].positiveIncrease <= 0) {
             STORE.graphNumbers.push(0);
